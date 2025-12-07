@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NotesHub Pro</title>
+  <meta name="description" content="NotesHub Pro - Upload & share notes (admin only). Mobile-first, PWA, Firebase auth (email+phone)." />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="logo3d">
+        <div class="logo-face logo-front">NotesHub Pro</div>
+        <div class="logo-face logo-back">NotesHub Pro</div>
+      </div>
+      <nav class="nav">
+        <button class="nav-item" id="nav-home">Home</button>
+        <button class="nav-item" id="nav-upload">Upload</button>
+        <button class="nav-item" id="nav-notes">Notes</button>
+        <button class="nav-item" id="nav-admin">Admin</button>
+      </nav>
+
+      <div class="theme-toggle">
+        <label class="mode-switch" title="Dark mode">
+          <input type="checkbox" id="modeToggle" />
+          <span class="slider-knob" aria-hidden="true"></span>
+        </label>
+      </div>
+
+      <div class="sidebar-foot">
+        <small>NotesHub Pro — Mobile ready</small>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <h1 class="glow heading">NotesHub Pro</h1>
+        <div class="auth-area" id="authArea">
+          <div id="userInfo" class="hide"></div>
+          <div id="authButtons">
+            <button id="openLogin" class="btn">Login / SignUp</button>
+          </div>
+        </div>
+      </header>
+
+      <section class="content" id="content">
+        <!-- Home -->
+        <div id="homeView" class="view">
+          <div class="hero">
+            <h2>Upload notes (Admin only)</h2>
+            <p>Only the site owner can upload. Others can view & download.</p>
+          </div>
+        </div>
+
+        <!-- Upload -->
+        <div id="uploadView" class="view hidden">
+          <div class="card">
+            <h3>Upload Note (Admin)</h3>
+            <form id="uploadForm">
+              <input type="text" id="noteTitle" placeholder="Title" required />
+              <input type="text" id="noteCategory" placeholder="Category (e.g. Maths)" />
+              <input type="file" id="fileInput" accept=".pdf,image/*" required />
+              <div class="row">
+                <button type="submit" id="uploadBtn" class="primary">Upload</button>
+                <button type="button" id="cancelUpload" class="btn">Cancel</button>
+              </div>
+              <p id="uploadStatus" class="muted"></p>
+            </form>
+            <p class="muted small">Uploads are saved to Firebase Storage and metadata in Firestore (if configured).</p>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div id="notesView" class="view hidden">
+          <div class="controls">
+            <input id="searchInput" placeholder="Search notes..." />
+            <select id="sortSelect"><option value="new">Newest</option><option value="name">Name A→Z</option></select>
+          </div>
+          <div id="notesGrid" class="grid"></div>
+        </div>
+
+        <!-- Admin -->
+        <div id="adminView" class="view hidden">
+          <div class="card">
+            <h3>Admin Dashboard</h3>
+            <p id="adminInfo" class="muted">Not logged in as admin.</p>
+            <button id="exportBtn" class="btn">Export Backup (JSON)</button>
+            <button id="clearBtn" class="btn btn-danger">Clear Local DB</button>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <small>&copy; NotesHub Pro</small>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-card">
+      <button id="closeLogin" class="close">✕</button>
+      <h3>Login / Signup</h3>
+
+      <div class="auth-tabs">
+        <button class="tab active" data-tab="email">Email</button>
+        <button class="tab" data-tab="phone">Phone</button>
+      </div>
+
+      <div class="tab-panel" id="tab-email">
+        <input id="email" type="email" placeholder="Email" />
+        <input id="password" type="password" placeholder="Password" />
+        <div class="row">
+          <button id="emailSignup" class="primary">Sign up</button>
+          <button id="emailLogin" class="btn">Login</button>
+        </div>
+      </div>
+
+      <div class="tab-panel hidden" id="tab-phone">
+        <input id="phone" type="tel" placeholder="+91xxxxxxxxxx" />
+        <div id="recaptcha-container"></div>
+        <div class="row">
+          <button id="sendOtp" class="primary">Send OTP</button>
+        </div>
+        <input id="otpCode" placeholder="Enter OTP" />
+        <button id="verifyOtp" class="btn">Verify OTP</button>
+      </div>
+
+      <div id="authMsg" class="muted"></div>
+    </div>
+  </div>
+
+  <template id="noteCardTpl">
+    <article class="note-card">
+      <h4 class="title"></h4>
+      <div class="meta"></div>
+      <div class="actions">
+        <a class="download" target="_blank">Download</a>
+      </div>
+    </article>
+  </template>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
